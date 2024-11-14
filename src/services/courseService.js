@@ -1,45 +1,31 @@
 import CourseRepository from '../repositories/courseRepository.js';
-import CourseSubjectRepository from '../repositories/courseSubjectRepository.js';
 
 export class CourseService {
   async createCourse(courseData) {
+    // Create the course without handling subjects
     const course = await CourseRepository.createCourse(courseData);
-
-    // Add subjects to course if provided
-    if (courseData.subjectIds) {
-      for (const subjectId of courseData.subjectIds) {
-        await CourseSubjectRepository.addSubjectToCourse(course.id, subjectId);
-      }
-    }
-
     return course;
   }
 
   async getAllCourses() {
+    // Get all courses without concern for subjects
     return await CourseRepository.getAllCourses();
   }
 
   async getCourseById(id) {
+    // Get a course by ID without handling subjects
     return await CourseRepository.getCourseById(id);
   }
 
   async updateCourse(id, courseData) {
+    // Update the course without handling subjects
     const course = await CourseRepository.updateCourse(id, courseData);
-
-    // Remove previous subjects and add new ones
-    await CourseSubjectRepository.removeSubjectsFromCourse(course.id);
-    if (courseData.subjectIds) {
-      for (const subjectId of courseData.subjectIds) {
-        await CourseSubjectRepository.addSubjectToCourse(course.id, subjectId);
-      }
-    }
-
     return course;
   }
 
   async deleteCourse(id) {
+    // Delete the course without concern for subjects
     const course = await CourseRepository.deleteCourse(id);
     return course;
   }
 }
-
