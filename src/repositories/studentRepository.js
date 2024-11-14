@@ -1,77 +1,80 @@
+// repositories/studentRepository.js
 import { query } from '../config/dbConfig.js';
 import Student from '../models/studentModel.js';
 
 export class StudentRepository {
+  // Create a new student
   async createStudent(studentData) {
-    const { name, email, age } = studentData;
+    const {
+      first_name, middle_name, last_name, contact_number, address,
+      date_of_birth, student_type, standing_year, semester
+    } = studentData;
+
     const result = await query(
-      'INSERT INTO students (name, email, age) VALUES ($1, $2, $3) RETURNING *',
-      [name, email, age]
+      `INSERT INTO students 
+        (first_name, middle_name, last_name, contact_number, address, date_of_birth, student_type, standing_year, semester) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
+       RETURNING *`,
+      [
+        first_name, middle_name, last_name, contact_number, address,
+        date_of_birth, student_type, standing_year, semester
+      ]
     );
-    const student = Student.fromDatabase(result.rows[0]);
 
-    // If courseIds are provided, associate courses with the student
-    if (studentData.courseIds) {
-      for (const courseId of studentData.courseIds) {
-        await query(
-          'INSERT INTO student_courses (student_id, course_id) VALUES ($1, $2)',
-          [student.id, courseId]
-        );
-      }
-    }
-
-    return student;
+    return Student.fromDatabase(result.rows[0]);
   }
 
+  // Update a student's details
+  async updateStudent(id, studentData) {
+    const {
+      first_name, middle_name, last_name, contact_number, address,
+      date_of_birth, student_type, standing_year, semester
+    } = studentData;
+
+    // Check if the student exists
+    const existingStudent = await this.getStudentById(id);
+    if (!existingStudent) {
+      throw new Error('Student not found');
+    }
+
+    const result = await query(
+      `UPDATE students SET 
+        first_name = $1, middle_name = $2, last_name = $3, 
+        contact_number = $4, address = $5, date_of_birth = $6, 
+        student_type = $7, standing_year = $8, semester = $9 
+       WHERE student_id = $10 RETURNING *`,
+      [
+        first_name, middle_name, last_name,  contact_number, address,
+        date_of_birth, student_type, standing_year, semester, id
+      ]
+    );
+    return Student.fromDatabase(result.rows[0]);
+  }
+
+  // Retrieve all students
   async getAllStudents() {
     const result = await query('SELECT * FROM students');
     return result.rows.map(row => Student.fromDatabase(row));
   }
 
+  // Retrieve a student by ID
   async getStudentById(id) {
-    const result = await query('SELECT * FROM students WHERE id = $1', [id]);
+    const result = await query('SELECT * FROM students WHERE student_id = $1', [id]);
     if (result.rows.length === 0) return null;
-
-    const student = Student.fromDatabase(result.rows[0]);
-
-    // Fetch the associated courses
-    student.courseIds = await Student.fetchCourses(id);
-
-    return student;
+    return Student.fromDatabase(result.rows[0]);
   }
 
-  async updateStudent(id, studentData) {
-    const { name, email, age, courseIds } = studentData;
-    const result = await query(
-      'UPDATE students SET name = $1, email = $2, age = $3 WHERE id = $4 RETURNING *',
-      [name, email, age, id]
-    );
-    const student = Student.fromDatabase(result.rows[0]);
-
-    // Update associated courses
-    if (courseIds) {
-      // Remove existing course associations
-      await query('DELETE FROM student_courses WHERE student_id = $1', [id]);
-
-      // Add new courses
-      for (const courseId of courseIds) {
-        await query(
-          'INSERT INTO student_courses (student_id, course_id) VALUES ($1, $2)',
-          [id, courseId]
-        );
-      }
+  // Delete a student by ID
+  async deleteStudent(id) {
+    // Check if the student exists before attempting deletion
+    const existingStudent = await this.getStudentById(id);
+    if (!existingStudent) {
+      throw new Error('Student not found');
     }
 
-    return student;
-  }
-
-  async deleteStudent(id) {
-    // Remove associated courses first
-    await query('DELETE FROM student_courses WHERE student_id = $1', [id]);
-
-    const result = await query('DELETE FROM students WHERE id = $1 RETURNING *', [id]);
-    if (result.rows.length === 0) return null;
+    const result = await query('DELETE FROM students WHERE student_id = $1 RETURNING *', [id]);
     return Student.fromDatabase(result.rows[0]);
   }
 }
 
+export default StudentRepository;
