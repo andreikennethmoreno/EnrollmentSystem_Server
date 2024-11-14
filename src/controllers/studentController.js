@@ -27,10 +27,10 @@ export const getStudentById = async (req, res) => {
 
 // src/controllers/studentController.js
 export const createStudent = async (req, res) => {
-  const { first_name, last_name, contact_number, address, date_of_birth, student_type, standing_year, semester } = req.body;
+  const { first_name, last_name, contact_number, address, date_of_birth, student_type, standing_year, semester, password } = req.body;
 
   // Check each field, returning specific errors as expected
-  const requiredFields = { first_name, last_name, contact_number, address, date_of_birth, student_type, standing_year, semester };
+  const requiredFields = { first_name, last_name, contact_number, address, date_of_birth, student_type, standing_year, semester , password};
   for (const [field, value] of Object.entries(requiredFields)) {
     if (!value) {
       return handleResponse(res, 400, { error: `${field.replace('_', ' ')} is required` });

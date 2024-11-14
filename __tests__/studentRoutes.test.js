@@ -1,13 +1,15 @@
 import request from 'supertest';
 import app, { server } from '../src/app';  // Import the server as well
 import { query } from '../src/config/dbConfig'; // or wherever your database connection is located
+import bcrypt from 'bcryptjs';  // Import bcrypt for password comparison
 import StudentService from '../src/services/studentService';
 
 describe('Student Routes', () => {
 
   let createdStudentId;
+  let createdStudentPassword; // Variable to store the hashed password for validation
 
-  it('should create a new student', async () => {
+  it('should create a new student with password', async () => {
     const studentData = {
       first_name: 'John',
       middle_name: 'Michael',
@@ -17,7 +19,8 @@ describe('Student Routes', () => {
       date_of_birth: '2000-01-01',
       student_type: 'regular',
       standing_year: 2,
-      semester: '1st'
+      semester: '1st',
+      password: 'TestPassword123' // Password field added here
     };
 
     const res = await request(app)
@@ -27,6 +30,8 @@ describe('Student Routes', () => {
     expect(res.status).toBe(201);
     expect(res.body.data).toHaveProperty('student_id');
     createdStudentId = res.body.data.student_id;
+    createdStudentPassword = res.body.data.password; // Store the hashed password for later comparison
+
     expect(res.body.data.first_name).toBe(studentData.first_name);
     expect(res.body.data.last_name).toBe(studentData.last_name);
     expect(res.body.data.email).toMatch(
@@ -34,30 +39,46 @@ describe('Student Routes', () => {
     );
   });
 
- 
+  it('should validate that password is hashed correctly', async () => {
+    // Retrieve the student from the database to check password
+    const res = await query('SELECT password FROM students WHERE student_id = $1', [createdStudentId]);
+    
+    // Use bcrypt to compare the stored hashed password with the plain text password
+    const isPasswordValid = await bcrypt.compare('TestPassword123', res.rows[0].password);
+    
+    expect(isPasswordValid).toBe(true); // Check that the password matches
+  });
 
- 
-  it('should not create a student with missing required fields', async () => {
-    const requiredFields = [
-      'first_name', 'last_name', 'contact_number', 'address', 'date_of_birth', 'student_type', 'standing_year', 'semester'
-    ];
-  
-    for (let field of requiredFields) {
-      const studentData = {
-        ...requiredFields.reduce((acc, f) => {
-          if (f !== field) acc[f] = 'test';
-          return acc;
-        }, {}),
-      };
-  
-      const res = await request(app)
-        .post('/api/students')
-        .send(studentData);
-  
-      expect(res.status).toBe(400);
-      expect(res.body.error).toContain(field.replace('_', ' ') + " is required");
-    }
-  }, 10000);  // Increased timeout
+ it('should not create a student with missing required fields', async () => {
+  const requiredFields = [
+    'first_name', 'last_name', 'contact_number', 'address', 'date_of_birth', 
+    'student_type', 'standing_year', 'semester', 'password'
+  ];
+
+  for (let field of requiredFields) {
+    // Create studentData with the current field missing
+    const studentData = {
+      first_name: 'test',
+      last_name: 'test',
+      contact_number: '123-456-7890',
+      address: '123 Main St',
+      date_of_birth: '2000-01-01',
+      student_type: 'regular',
+      standing_year: 2,
+      semester: '1st',
+      password: 'TestPassword123', // Default valid password
+      // Remove the current field from the data
+      [field]: undefined
+    };
+
+    const res = await request(app)
+      .post('/api/students')
+      .send(studentData);
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toContain(`${field.replace('_', ' ')} is required`);
+  }
+}, 10000); // Increased timeout
 
 
   it('should get all students', async () => {
@@ -73,7 +94,6 @@ describe('Student Routes', () => {
     expect(res.body.data[0].first_name).toBe('John');
     expect(res.body.data[0].last_name).toBe('Smith');
   });
-
 
 
   it('should get a student by ID', async () => {
@@ -95,7 +115,8 @@ describe('Student Routes', () => {
       student_type: 'regular',
       date_of_birth: '2000-01-01',
       standing_year: 3,
-      semester: '2nd'
+      semester: '2nd',
+      password: 'TestPassword123456'
     };
 
     const res = await request(app)
@@ -115,8 +136,9 @@ describe('Student Routes', () => {
       student_type: 'regular',
       date_of_birth: '2000-01-01',
       standing_year: 3,
-      semester: '2nd'
-    };
+      semester: '2nd', 
+      password: 'TTestPassword123456'
+      };
   
     const res = await request(app)
       .put('/api/students/999999')  // Non-existent student ID
@@ -175,7 +197,6 @@ describe('Student Routes', () => {
     expect(res.status).toBe(500);
     expect(res.body.error).toBe('Error Fetching Students');
   });
-  
   
   // Cleanup after all tests
   afterAll(async () => {

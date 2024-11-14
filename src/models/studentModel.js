@@ -14,7 +14,7 @@ class Student {
     student_type,
     standing_year,
     semester,
-    courseIds = []
+    password,
   }) {
     this.student_id = student_id;
     this.first_name = first_name;
@@ -27,6 +27,7 @@ class Student {
     this.student_type = student_type;
     this.standing_year = standing_year;
     this.semester = semester;
+    this.password = password;
   }
 
   // Static method to create a Student instance from a database row
@@ -43,6 +44,7 @@ class Student {
       student_type: row.student_type,
       standing_year: row.standing_year,
       semester: row.semester,
+      password: row.password,
     });
   }
 
