@@ -28,21 +28,19 @@ export const getDepartmentHeadById = async (req, res) => {
 export const createDepartmentHead = async (req, res) => {
   const { first_name, last_name, password } = req.body;
 
-  // Check each field, returning specific errors as expected
+  // Check each required field for missing values
   const requiredFields = { first_name, last_name, password };
   for (const [field, value] of Object.entries(requiredFields)) {
     if (!value) {
       return handleResponse(res, 400, { error: `${field.replace('_', ' ')} is required` });
     }
   }
-
-  try {
-    const newDepartmentHead = await departmentHeadService.createDepartmentHead(req.body);  // Errors will propagate
+    const newDepartmentHead = await departmentHeadService.createDepartmentHead(req.body);
     return handleResponse(res, 201, newDepartmentHead);
-  } catch (error) {
-    return handleResponse(res, 500, { error: 'Error Creating Department Head' });
-  }
+  
 };
+
+
 
 export const updateDepartmentHead = async (req, res) => {
   try {

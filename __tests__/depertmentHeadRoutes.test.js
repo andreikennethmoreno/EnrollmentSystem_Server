@@ -46,19 +46,28 @@ describe('DepartmentHead Routes', () => {
   });
 
   test('should not create a department head with missing required fields', async () => {
-    const departmentHeadData = {
-        // leave out one or more required fields, e.g., no 'first_name'
+    const requiredFields = ['first_name', 'last_name', 'password'];
+  
+    for (let field of requiredFields) {
+      // Create departmentHeadData with the current field missing
+      const departmentHeadData = {
+        first_name: 'John',
         last_name: 'Doe',
-        email: 'johndoe@example.com',
-    };
-
-    const res = await request(app)
-        .post('/api/department-head/create')
+        password: 'Password123', // Default valid password
+        // Remove the current field from the data
+        [field]: undefined
+      };
+  
+      const res = await request(app)
+        .post('/api/department-heads') // Ensure the correct endpoint is used
         .send(departmentHeadData);
-
-    expect(res.status).toBe(404);
-    expect(res.body.error).toContain('first name is required');
-});
+  
+      expect(res.status).toBe(400); // Expecting 400 Bad Request
+      expect(res.body.error).toContain(`${field.replace('_', ' ')} is required`);
+    }
+  }, 10000); // Increased timeout
+  
+  
 
 
   it('should get all department heads', async () => {
