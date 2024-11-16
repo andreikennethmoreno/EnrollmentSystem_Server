@@ -71,6 +71,19 @@ export class DepartmentHeadRepository {
     const result = await query('DELETE FROM department_heads WHERE head_id = $1 RETURNING *', [id]);
     return DepartmentHead.fromDatabase(result.rows[0]);
   }
+
+
+  async getDepartmentHeadByEmail(email) {
+    const result = await query('SELECT * FROM department_heads WHERE email = $1', [email]);
+    if (result.rows.length === 0) return null;
+    return DepartmentHead.fromDatabase(result.rows[0]);
+  }
+
+  // Verify the password
+  async verifyPassword(departmentHead, plainPassword) {
+    const isMatch = await bcrypt.compare(plainPassword, departmentHead.password);
+    return isMatch;
+  }
 }
 
 export default DepartmentHeadRepository;
