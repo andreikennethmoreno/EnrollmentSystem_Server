@@ -6,21 +6,25 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export const protect = (req, res, next) => {
-  // Log the entire incoming headers to verify if Authorization header is sent
-  console.log('Authorization Header:', req.headers.authorization);
-
-  const token = req.headers.authorization?.split(' ')[1]; // Extract token from header
-  console.log('Token:', token);  // Log the extracted token
-
+  const token = req.headers.authorization?.split(' ')[1];
   if (!token) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET); // Decode and verify the token
-    req.user = decoded; // Attach decoded user info to request object
-    next(); // Proceed to next middleware or route handler
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded; // Attach user info to the request
+    next();
   } catch (err) {
     res.status(401).json({ error: 'Token is invalid or expired' });
   }
+};
+
+export const authorize = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ error: 'Forbidden: Access denied' });
+    }
+    next();
+  };
 };
