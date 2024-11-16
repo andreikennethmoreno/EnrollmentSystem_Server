@@ -3,14 +3,14 @@ import { query } from '../config/dbConfig.js';  // Assuming query is a function 
 
 class DepartmentHead {
   constructor({
-    head_id,
+    id,
     first_name,
     middle_name,
     last_name,
     email,
     password,
   }) {
-    this.head_id = head_id;
+    this.id = id;
     this.first_name = first_name;
     this.middle_name = middle_name;
     this.last_name = last_name;
@@ -21,7 +21,7 @@ class DepartmentHead {
   // Static method to create a DepartmentHead instance from a database row
   static fromDatabase(row) {
     return new DepartmentHead({
-      head_id: row.head_id,
+      id: row.id,
       first_name: row.first_name,
       middle_name: row.middle_name,
       last_name: row.last_name,
