@@ -1,9 +1,11 @@
 import express from 'express';
 import cors from 'cors';  // Import the cors package
-import studentRoutes from './routes/studentRoutes.js';
 import http from 'http';  // Import http for creating a server
+import studentRoutes from './routes/studentRoutes.js';
+import registrarHeadRoutes from './routes/registrarHeadRoutes.js';
 import departmentHeadRoutes from './routes/departmentHeadRoutes.js';  // Corrected import
 import authRoutes from './routes/authRoutes.js';
+
 
 
 
@@ -23,6 +25,8 @@ app.get('/', (req, res) => {
 app.use('/api/students', studentRoutes);
 app.use('/api/department-heads', departmentHeadRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/registrar-heads', registrarHeadRoutes);
+
 
 // Create the server instance
 const server = http.createServer(app);

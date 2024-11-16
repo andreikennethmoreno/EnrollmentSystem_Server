@@ -73,7 +73,7 @@ export class DepartmentHeadRepository {
   }
 
 
-  async getDepartmentHeadByEmail(email) {
+  async getByEmail(email) {
     const result = await query('SELECT * FROM department_heads WHERE email = $1', [email]);
     if (result.rows.length === 0) return null;
     return DepartmentHead.fromDatabase(result.rows[0]);

@@ -16,3 +16,15 @@ const pool = new Pool({
 });
 
 export const query = (text, params) => pool.query(text, params);
+
+pool.query(`
+  SELECT table_name
+  FROM information_schema.tables
+  WHERE table_schema = 'public'  -- Assuming your tables are in the 'public' schema
+`)
+  .then(result => {
+    console.log('Tables in the database:', result.rows);
+  })
+  .catch(err => {
+    console.error('Error fetching table names:', err);
+  });

@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { DepartmentHeadRepository } from '../repositories/departmentHeadRepository.js';
-//import { RegistrarRepository } from '../repositories/registrarRepository.js'; // Example additional repository
+import { RegistrarHeadRepository } from '../repositories/registrarHeadRepository.js'; // Example additional repository
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -11,7 +11,7 @@ const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
 // Map roles to their corresponding repositories
 const roleRepositories = {
   department_head: new DepartmentHeadRepository(),
-  //registrar: new RegistrarRepository(), // Example additional role
+  registrar: new RegistrarHeadRepository(), // Example additional role
 };
 
 export const loginUser = async (email, password, role) => {
@@ -20,6 +20,7 @@ export const loginUser = async (email, password, role) => {
   // Check if the role is valid
   const repository = roleRepositories[role];
   if (!repository) {
+    console.error(`Role "${role}" not found in roleRepositories.`);
     throw new Error('Invalid role');
   }
 
