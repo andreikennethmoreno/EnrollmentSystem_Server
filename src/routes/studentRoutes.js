@@ -15,7 +15,7 @@ const router = express.Router();
 router.post('/login', login);
 
 // Protected routes for authenticated users
-router.use(protect);
+//router.use(protect);
 
 // router.get('/', authorize('department_head', 'registrar'), getAllStudents);
 // router.get('/:id', authorize('department_head', 'registrar'), getStudentById);
@@ -25,7 +25,7 @@ router.use(protect);
 // router.put('/:id', authorize('registrar'), updateStudent);
 // router.delete('/:id', authorize('registrar'), deleteStudent);
 
-// router.get('/', getAllStudents);
+router.get('/', getAllStudents);
 router.get('/:id', getStudentById);
 
 // Routes for registrar only (authorization removed for testing)
