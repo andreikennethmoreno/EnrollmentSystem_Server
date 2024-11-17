@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
 app.use('/api/students', studentRoutes);
 app.use('/api/department-heads', departmentHeadRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/registrar-heads', registrarHeadRoutes);
+app.use('/api/registrar', registrarHeadRoutes);
 
 
 // Create the server instance

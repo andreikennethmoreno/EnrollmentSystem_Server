@@ -23,18 +23,18 @@ router.post('/logout', logout);
 router.get('/', authorize('department_head', 'registrar'), getAllStudents);
 router.get('/:id', authorize('department_head', 'registrar'), getStudentById);
 
-// // Routes for registrar only
-// router.post('/', authorize('registrar'), createStudent);
-// router.put('/:id', authorize('registrar'), updateStudent);
-// router.delete('/:id', authorize('registrar'), deleteStudent);
+// Routes for registrar only
+router.post('/', authorize('registrar'), createStudent);
+router.put('/:id', authorize('registrar'), updateStudent);
+router.delete('/:id', authorize('registrar'), deleteStudent);
 
-//router.get('/', getAllStudents);
-router.get('/:id', getStudentById);
+// //router.get('/', getAllStudents);
+// router.get('/:id', getStudentById);
 
-// Routes for registrar only (authorization removed for testing)
-router.post('/', createStudent);
-router.put('/:id', updateStudent);
-router.delete('/:id', deleteStudent);
+// // Routes for registrar only (authorization removed for testing)
+// router.post('/', createStudent);
+// router.put('/:id', updateStudent);
+// router.delete('/:id', deleteStudent);
 
 
 
