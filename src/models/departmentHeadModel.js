@@ -1,5 +1,3 @@
-// models/departmentHeadModel.js
-
 class DepartmentHead {
   constructor({
     id,
@@ -8,6 +6,7 @@ class DepartmentHead {
     last_name,
     email,
     password,
+    program_id, // Add program_id
   }) {
     this.id = id;
     this.first_name = first_name;
@@ -15,6 +14,7 @@ class DepartmentHead {
     this.last_name = last_name;
     this.email = email;
     this.password = password;
+    this.program_id = program_id; // Initialize program_id
   }
 
   // Static method to create a DepartmentHead instance from a database row
@@ -26,9 +26,9 @@ class DepartmentHead {
       last_name: row.last_name,
       email: row.email,
       password: row.password,
+      program_id: row.program_id, // Map program_id from the database row
     });
   }
-
 }
 
 export default DepartmentHead;

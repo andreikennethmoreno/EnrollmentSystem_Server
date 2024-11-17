@@ -1,4 +1,3 @@
-// src/repositories/departmentHeadRepository.js
 import { BaseRepository } from './baseRepository.js';
 import bcrypt from 'bcrypt';
 import DepartmentHead from '../models/departmentHeadModel.js';
@@ -13,17 +12,23 @@ export class DepartmentHeadRepository extends BaseRepository {
     return await bcrypt.hash(password, 10); // 10 is the salt rounds
   }
 
-  // Override the create method to hash the password
+  // Override the create method to hash the password and include program_id
   async create(departmentHeadData) {
-    const { first_name, middle_name, last_name, password } = departmentHeadData;
+    const { first_name, middle_name, last_name, password, program_id } = departmentHeadData;
     const hashedPassword = await this.hashPassword(password);
 
-    return super.create({ first_name, middle_name, last_name, password: hashedPassword });
+    return super.create({
+      first_name,
+      middle_name,
+      last_name,
+      password: hashedPassword,
+      program_id, // Include program_id in creation
+    });
   }
 
-  // Override the update method to hash the password if it's provided
+  // Override the update method to hash the password if it's provided and update program_id
   async update(id, departmentHeadData) {
-    const { first_name, middle_name, last_name, password } = departmentHeadData;
+    const { first_name, middle_name, last_name, password, program_id } = departmentHeadData;
 
     const hashedPassword = password ? await this.hashPassword(password) : undefined;
 
@@ -31,7 +36,8 @@ export class DepartmentHeadRepository extends BaseRepository {
       first_name,
       middle_name,
       last_name,
-      ...(hashedPassword && { password: hashedPassword })
+      ...(hashedPassword && { password: hashedPassword }),
+      ...(program_id && { program_id }) // Update program_id if provided
     };
 
     return super.update(id, dataToUpdate);
