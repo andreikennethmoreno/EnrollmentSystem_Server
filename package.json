@@ -21,7 +21,9 @@
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.13.1",
     "rm": "^0.1.8",
-    "sequelize": "^6.37.5"
+    "sequelize": "^6.37.5",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",

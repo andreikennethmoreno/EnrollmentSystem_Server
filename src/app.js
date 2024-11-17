@@ -1,35 +1,56 @@
 import express from 'express';
-import cors from 'cors';  // Import the cors package
-import http from 'http';  // Import http for creating a server
+import cors from 'cors';
+import http from 'http';
+import swaggerUi from 'swagger-ui-express';
+import swaggerJSDoc from 'swagger-jsdoc';  // Import swagger-jsdoc
 import studentRoutes from './routes/studentRoutes.js';
 import registrarHeadRoutes from './routes/registrarHeadRoutes.js';
-import departmentHeadRoutes from './routes/departmentHeadRoutes.js';  // Corrected import
+import departmentHeadRoutes from './routes/departmentHeadRoutes.js';
 import authRoutes from './routes/authRoutes.js';
-import programRoutes from './routes/programRoutes.js'; // Import the program routes
+import programRoutes from './routes/programRoutes.js';
 
-
-
-
-
+// Create the express app
 const app = express();
 
-// Use the CORS middleware to allow cross-origin requests
+// Use CORS and enable JSON parsing
 app.use(cors());
-
-// Enable JSON parsing
 app.use(express.json());
 
-app.get('/', (req, res) => {
-    res.send('EnrollmentSystem_Server'); 
-  });
+// Swagger setup
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Enrollment System API',
+      version: '1.0.0',
+      description: 'API documentation for the Enrollment System',
+    },
+    servers: [
+      {
+        url: 'http://localhost:3000/',  // Adjust the URL to your API server
+      },
+    ],
+  },
+  apis: ['./src/routes/*.js'],  // Make sure this path is correct
+};
+
+
+// Initialize Swagger
+const swaggerDocs = swaggerJSDoc(swaggerOptions);
+
+// Serve Swagger API Docs
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Define routes
-app.use('/api/students', studentRoutes);
-app.use('/api/department-heads', departmentHeadRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/registrar', registrarHeadRoutes);
-app.use('/api/programs', programRoutes);
+app.get('/', (req, res) => {
+  res.send('EnrollmentSystem_Server');
+});
 
+app.use('/api/students', studentRoutes);
+app.use('/api/departmentheads', departmentHeadRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/registrarheads', registrarHeadRoutes);
+app.use('/api/programs', programRoutes);
 
 // Create the server instance
 const server = http.createServer(app);
