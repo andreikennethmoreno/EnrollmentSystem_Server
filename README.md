@@ -43,7 +43,7 @@ Follow these steps to set up the project on your local machine:
    ```bash
      DB_HOST="localhost"
      DB_USER="postgres"
-     DB_PASSWORD="100903"
+     DB_PASSWORD="123123"
      DB_NAME="EnrollmentSystem_Database"
      DB_PORT=5432
      JWT_SECRET = "ENROLLMENT_CVSU"
