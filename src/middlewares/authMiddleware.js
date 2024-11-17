@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import { verifyToken } from '../services/authService.js';
+
 
 dotenv.config();
 
@@ -12,13 +14,15 @@ export const protect = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = verifyToken(token); // This verifies the token and checks if it's blacklisted
     req.user = decoded; // Attach user info to the request
     next();
   } catch (err) {
-    res.status(401).json({ error: 'Token is invalid or expired' });
+    res.status(401).json({ error: 'Token is invalid, expired, or blacklisted' });
   }
 };
+
+
 
 export const authorize = (...roles) => {
   return (req, res, next) => {

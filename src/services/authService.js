@@ -8,12 +8,15 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
 
+let blacklistedTokens = [];  // Store blacklisted tokens (in-memory)
+
 // Map roles to their corresponding repositories
 const roleRepositories = {
   department_head: new DepartmentHeadRepository(),
   registrar: new RegistrarHeadRepository(), // Example additional role
 };
 
+// Login User Function
 export const loginUser = async (email, password, role) => {
   console.log('loginUser triggered for role:', role);
 
@@ -46,4 +49,42 @@ export const loginUser = async (email, password, role) => {
   );
 
   return { token, user };
+};
+
+// Generate JWT Token
+export const generateToken = (payload) => {
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION });
+};
+
+// Verify JWT Token and Check Blacklist
+export const verifyToken = (token) => {
+  try {
+    // Check if the token is blacklisted
+    if (blacklistedTokens.includes(token)) {
+      throw new Error('Token is blacklisted');
+    }
+    return jwt.verify(token, JWT_SECRET);
+  } catch (err) {
+    throw new Error('Invalid token');
+  }
+};
+
+// Blacklist the Token (Log Out)
+export const blacklistToken = (token) => {
+  blacklistedTokens.push(token); // Add token to blacklist
+};
+
+// Optional: Clear expired tokens from the blacklist
+export const clearExpiredTokens = () => {
+  const now = Date.now();
+  blacklistedTokens = blacklistedTokens.filter((token) => {
+    const decoded = jwt.decode(token);
+    return decoded.exp * 1000 > now; // Remove expired tokens
+  });
+};
+
+// Example of Logging out (Blacklisting Token)
+export const logoutUser = (token) => {
+  blacklistToken(token); // Blacklist the token when the user logs out
+  console.log(`Token blacklisted: ${token}`);
 };
