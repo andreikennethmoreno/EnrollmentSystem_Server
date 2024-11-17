@@ -173,7 +173,6 @@ router.post('/', authorize('registrar'), createProgram);
  *                 type: string
  *             example:
  *               name: "Mechanical Engineering"
- *               description: "Bachelor's program in Mechanical Engineering."
  *     security:
  *       - bearerAuth: []
  *     x-authorize: ['registrar']

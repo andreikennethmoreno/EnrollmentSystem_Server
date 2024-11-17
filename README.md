@@ -29,19 +29,14 @@ Follow these steps to set up the project on your local machine:
    ```bash
    cd EnrollmentSystem_Server
 
-3. **Navigate into the project directory:**
-
-   ```bash
-   cd EnrollmentSystem_Server
-
-4. **Install dependencies:**
+3. **Install dependencies:**
 
    In the project directory, run the following command to install the required npm packages:
 
    ```bash
    npm install
 
-5. **Configure environment variables:**
+4. **Configure environment variables:**
 
     Create a .env file in the root of the project (if not already present) and add the necessary environment variables, such as your database credentials:
    
@@ -54,17 +49,18 @@ Follow these steps to set up the project on your local machine:
      JWT_SECRET = "ENROLLMENT_CVSU"
      JWT_EXPIRES_IN = 2h
 
-6. **Run the server:**
+5. **Run the server:**
 
     After setting up the database and environment variables, start the server:
 
    ```bash
    npm run dev
 
-6. **API documentation:**
+6.  **API documentation:**
 
    ```bash
    http://localhost:3000/api-docs/#/
+
 
 
 
