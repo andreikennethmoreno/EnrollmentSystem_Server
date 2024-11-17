@@ -20,29 +20,54 @@ export const getStudentById = async (req, res) => {
     }
     return handleResponse(res, 200, student);
   } catch (error) {
-    return handleResponse(res, 404, { error: error.message});
+    return handleResponse(res, 404, { error: error.message });
   }
 };
 
-
-// src/controllers/studentController.js
 export const createStudent = async (req, res) => {
-  const { first_name, last_name, contact_number, address, date_of_birth, student_type, standing_year, semester, password } = req.body;
+  const {
+    first_name,
+    last_name,
+    contact_number,
+    address,
+    date_of_birth,
+    student_type,
+    standing_year,
+    semester,
+    password,
+    program_id, // Include program_id
+  } = req.body;
 
-  // Check each field, returning specific errors as expected
-  const requiredFields = { first_name, last_name, contact_number, address, date_of_birth, student_type, standing_year, semester , password};
+  // Check required fields, returning specific errors as expected
+  const requiredFields = {
+    first_name,
+    last_name,
+    contact_number,
+    address,
+    date_of_birth,
+    student_type,
+    standing_year,
+    semester,
+    password,
+    program_id, // Validate program_id as required
+  };
+
   for (const [field, value] of Object.entries(requiredFields)) {
     if (!value) {
-      return handleResponse(res, 400, { error: `${field.replace('_', ' ')} is required` });
+      return handleResponse(res, 400, {
+        error: `${field.replace('_', ' ')} is required`,
+      });
     }
   }
 
-  const newStudent = await studentService.createStudent(req.body);  // No try-catch, errors will propagate
-  return handleResponse(res, 201, newStudent);
+  try {
+    const newStudent = await studentService.createStudent(req.body);
+    return handleResponse(res, 201, newStudent);
+  } catch (error) {
+    return handleResponse(res, 500, { error: 'Error Creating Student' });
+  }
 };
 
-
-// src/controllers/studentController.js
 export const updateStudent = async (req, res) => {
   try {
     const updatedStudent = await studentService.updateStudent(req.params.id, req.body);
@@ -52,13 +77,10 @@ export const updateStudent = async (req, res) => {
   }
 };
 
-
-// src/controllers/studentController.js
 export const deleteStudent = async (req, res) => {
   try {
     const deletedStudent = await studentService.deleteStudent(req.params.id);
-  
-    return handleResponse(res, 200, deletedStudent);  // Respond with the deleted student details
+    return handleResponse(res, 200, deletedStudent); // Respond with the deleted student details
   } catch (error) {
     return handleResponse(res, 404, { error: 'Student not found' });
   }

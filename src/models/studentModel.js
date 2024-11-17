@@ -1,5 +1,3 @@
-// models/studentModel.js
-
 class Student {
   constructor({
     id,
@@ -14,6 +12,7 @@ class Student {
     standing_year,
     semester,
     password,
+    program_id, // Added program_id
   }) {
     this.id = id;
     this.first_name = first_name;
@@ -27,6 +26,7 @@ class Student {
     this.standing_year = standing_year;
     this.semester = semester;
     this.password = password;
+    this.program_id = program_id; // Assign program_id
   }
 
   // Static method to create a Student instance from a database row
@@ -44,10 +44,9 @@ class Student {
       standing_year: row.standing_year,
       semester: row.semester,
       password: row.password,
+      program_id: row.program_id, // Map program_id from database row
     });
   }
-
-  
 }
 
 export default Student;

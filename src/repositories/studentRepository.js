@@ -1,4 +1,3 @@
-// src/repositories/studentRepository.js
 import { BaseRepository } from './baseRepository.js';
 import bcrypt from 'bcrypt';
 import Student from '../models/studentModel.js';
@@ -26,6 +25,7 @@ export class StudentRepository extends BaseRepository {
       standing_year,
       semester,
       password,
+      program_id, // Include program_id
     } = studentData;
 
     const hashedPassword = await this.hashPassword(password);
@@ -41,6 +41,7 @@ export class StudentRepository extends BaseRepository {
       standing_year,
       semester,
       password: hashedPassword,
+      program_id, // Pass program_id to the database
     });
   }
 
@@ -57,6 +58,7 @@ export class StudentRepository extends BaseRepository {
       standing_year,
       semester,
       password,
+      program_id, // Include program_id
     } = studentData;
 
     const hashedPassword = password ? await this.hashPassword(password) : undefined;
@@ -72,6 +74,7 @@ export class StudentRepository extends BaseRepository {
       standing_year,
       semester,
       ...(hashedPassword && { password: hashedPassword }),
+      ...(program_id && { program_id }), // Update program_id if provided
     };
 
     return super.update(id, dataToUpdate);
