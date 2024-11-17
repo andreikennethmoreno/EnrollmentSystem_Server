@@ -1,5 +1,4 @@
 // models/registrarHeadModel.js
-import { query } from '../config/dbConfig.js';  // Assuming query is a function to run SQL queries
 
 class RegistrarHead {
   constructor({
@@ -30,7 +29,6 @@ class RegistrarHead {
     });
   }
 
-  // Additional methods for RegistrarHead can be added here
 }
 
 export default RegistrarHead;

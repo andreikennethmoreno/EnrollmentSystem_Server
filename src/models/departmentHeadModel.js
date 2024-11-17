@@ -1,5 +1,4 @@
 // models/departmentHeadModel.js
-import { query } from '../config/dbConfig.js';  // Assuming query is a function to run SQL queries
 
 class DepartmentHead {
   constructor({
@@ -30,7 +29,6 @@ class DepartmentHead {
     });
   }
 
-  // Additional methods for DepartmentHead can be added here
 }
 
 export default DepartmentHead;

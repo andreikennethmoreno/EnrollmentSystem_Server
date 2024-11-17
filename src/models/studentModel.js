@@ -1,5 +1,4 @@
 // models/studentModel.js
-import { query } from '../config/dbConfig.js';  // Assuming query is a function to run SQL queries
 
 class Student {
   constructor({

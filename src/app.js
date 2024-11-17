@@ -5,6 +5,8 @@ import studentRoutes from './routes/studentRoutes.js';
 import registrarHeadRoutes from './routes/registrarHeadRoutes.js';
 import departmentHeadRoutes from './routes/departmentHeadRoutes.js';  // Corrected import
 import authRoutes from './routes/authRoutes.js';
+import programRoutes from './routes/programRoutes.js'; // Import the program routes
+
 
 
 
@@ -26,6 +28,7 @@ app.use('/api/students', studentRoutes);
 app.use('/api/department-heads', departmentHeadRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/registrar', registrarHeadRoutes);
+app.use('/api/programs', programRoutes);
 
 
 // Create the server instance
